@@ -19,6 +19,10 @@ const generatePassword = () => {
   let excludeDuplicate = false;
 
   options.forEach((option) => {
+    if (option.id === "lowercase" && !option.checked) {
+      option.checked = true;
+    }
+
     if (option.checked) {
       if (option.id !== "exc-duplicate" && option.id !== "spaces") {
         staticPassword += characters[option.id];
@@ -70,10 +74,10 @@ options.forEach((option) => {
   option.addEventListener("change", generatePassword);
 });
 copyIcon.addEventListener("click", () => {
-    navigator.clipboard.writeText(passwordInput.value)
-    
-    copyIcon.classList = "ri-check-line";
-    setTimeout(() => {
-      copyIcon.classList = "ri-file-copy-line";
-    }, 1500);
+  navigator.clipboard.writeText(passwordInput.value);
+
+  copyIcon.classList = "ri-check-line";
+  setTimeout(() => {
+    copyIcon.classList = "ri-file-copy-line";
+  }, 1500);
 });
