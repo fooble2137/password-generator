@@ -68,14 +68,24 @@ body {
   transition: width 0.33s ease;
 }
 
-.pass-indicator#weak::before {
+.pass-indicator#poor::before {
   background: #ff6282;
   width: 20%;
+}
+
+.pass-indicator#weak::before {
+  background: #ff6282;
+  width: 35%;
 }
 
 .pass-indicator#medium::before {
   background: #e9d88b;
   width: 50%;
+}
+
+.pass-indicator#good::before {
+  background: #5eae60;
+  width: 70%;
 }
 
 .pass-indicator#strong::before {

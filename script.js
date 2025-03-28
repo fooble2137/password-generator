@@ -12,6 +12,32 @@ const characters = {
   symbols: "!@#$%^&*()_+[]{}|;:',.<>?/~`",
 };
 
+const updatePasswordIndicator = () => {
+  let score = 0;
+
+  const length = lengthSlider.value;
+  const selectedOptions = [...options].filter(
+    (option) => option.checked
+  ).length;
+
+  score += selectedOptions;
+
+  if (length >= 25) score += 6;
+  else if (length >= 20) score += 5;
+  else if (length >= 15) score += 4;
+  else if (length >= 5) score += 3;
+
+  let strength;
+
+  if (score <= 3) strength = "poor";
+  else if (score <= 5) strength = "weak";
+  else if (score <= 7) strength = "medium";
+  else if (score <= 9) strength = "good";
+  else strength = "strong";
+
+  passwordIndicator.id = strength;
+};
+
 const generatePassword = () => {
   let staticPassword = "";
   let passLength = lengthSlider.value;
@@ -49,22 +75,13 @@ const generatePassword = () => {
   }
 
   passwordInput.value = randomPassword;
-};
-generatePassword();
 
-const updatePasswordIndicator = () => {
-  passwordIndicator.id =
-    lengthSlider.value <= 8
-      ? "weak"
-      : lengthSlider.value <= 16
-      ? "medium"
-      : "strong";
+  updatePasswordIndicator();
 };
 
 const updateSlider = () => {
   document.querySelector(".pass-length span").innerText = lengthSlider.value;
   generatePassword();
-  updatePasswordIndicator();
 };
 updateSlider();
 
