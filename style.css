@@ -35,6 +35,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   background: none;
+  background-color: white;
   padding: 0 45px 0 15px;
   width: 100%;
   height: 45px;
@@ -49,6 +50,11 @@ body {
   cursor: pointer;
   color: #666;
   line-height: 46px;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #109bff;
 }
 
 .wrapper .pass-indicator {
