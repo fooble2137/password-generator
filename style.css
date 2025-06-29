@@ -1,30 +1,30 @@
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
 
 body {
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 100dvh;
+  align-items: center;
   background-color: #109bff;
+  min-height: 100dvh;
 }
 
 .container {
-  background-color: #f5f5f5;
-  width: 450px;
-  border-radius: 10px;
-  padding: 15px 30px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+  padding: 15px 30px;
+  width: 450px;
 }
 
 .container h1 {
-  font-size: 1.4rem;
-  font-weight: 500;
   margin-bottom: 15px;
+  font-weight: 500;
+  font-size: 1.4rem;
 }
 
 .wrapper .input-box {
@@ -32,57 +32,57 @@ body {
 }
 
 .input-box input {
-  width: 100%;
-  height: 45px;
-  background: none;
-  color: #000;
-  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background: none;
   padding: 0 45px 0 15px;
+  width: 100%;
+  height: 45px;
+  color: #000;
+  font-size: 1rem;
   letter-spacing: 1.5px;
 }
 
 .input-box i {
   position: absolute;
   right: 14px;
-  line-height: 46px;
-  color: #666;
   cursor: pointer;
+  color: #666;
+  line-height: 46px;
 }
 
 .wrapper .pass-indicator {
-  width: 100%;
+  position: relative;
   margin-top: 15px;
   border-radius: 5px;
-  position: relative;
+  width: 100%;
 }
 
 .pass-indicator .indicator-bar {
+  position: relative;
+  border-radius: 5px;
+  background-color: #dfdfdf;
   width: 100%;
   height: 8px;
-  background-color: #dfdfdf;
-  border-radius: 5px;
-  position: relative;
   overflow: hidden;
 }
 
 .indicator-bar::before {
-  content: "";
   position: absolute;
-  height: 100%;
-  border-radius: inherit;
   transition: all 0.3s ease;
+  border-radius: inherit;
   width: 0%;
+  height: 100%;
+  content: "";
 }
 
 .pass-indicator .indicator-text {
   display: block;
-  text-align: center;
-  font-size: 0.85rem;
+  transition: color 0.3s ease;
   margin-top: 8px;
   font-weight: 500;
-  transition: color 0.3s ease;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 /* Strength levels */
@@ -146,9 +146,9 @@ body {
 
 .pass-settings .options {
   display: flex;
-  list-style: none;
   flex-wrap: wrap;
   margin-top: 5px;
+  list-style: none;
 }
 
 .pass-settings .options .option {
@@ -159,10 +159,10 @@ body {
 }
 
 .options .option input {
-  height: 15px;
-  width: 15px;
   cursor: pointer;
   margin-right: 5px;
+  width: 15px;
+  height: 15px;
 }
 
 .options .option label {
@@ -171,21 +171,21 @@ body {
 }
 
 .wrapper .generate-btn {
-  width: 100%;
-  font-size: 1rem;
-  padding: 15px 30px;
+  cursor: pointer;
   margin-top: 30px;
-  background-color: #109bff;
-  color: #f5f5f5;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
+  background-color: #109bff;
+  padding: 15px 30px;
+  width: 100%;
+  color: #f5f5f5;
+  font-size: 1rem;
 }
 
 @media screen and (max-width: 475px) {
   .container {
-    width: 100%;
     border-radius: 0;
+    width: 100%;
   }
 
   .pass-settings .options {
@@ -199,10 +199,10 @@ body {
 
 @media screen and (max-height: 700px) {
   .container {
-    min-height: 100dvh;
-    align-items: center;
-    justify-content: center;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100dvh;
   }
 }
