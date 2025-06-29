@@ -210,5 +210,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100dvh;
+    border-radius: 0;
   }
 }
