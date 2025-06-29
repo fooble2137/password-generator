@@ -53,44 +53,82 @@ body {
 
 .wrapper .pass-indicator {
   width: 100%;
-  height: 5px;
-  background-color: #dfdfdf;
   margin-top: 15px;
-  border-radius: 30px;
+  border-radius: 5px;
   position: relative;
 }
 
-.pass-indicator::before {
+.pass-indicator .indicator-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #dfdfdf;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.indicator-bar::before {
   content: "";
   position: absolute;
   height: 100%;
   border-radius: inherit;
-  transition: width 0.33s ease;
+  transition: all 0.3s ease;
+  width: 0%;
 }
 
-.pass-indicator#poor::before {
-  background: #ff6282;
+.pass-indicator .indicator-text {
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* Strength levels */
+.pass-indicator.very-weak .indicator-bar::before {
+  background: linear-gradient(90deg, #ff4757, #ff6b7a);
   width: 20%;
 }
 
-.pass-indicator#weak::before {
-  background: #ff6282;
-  width: 35%;
+.pass-indicator.very-weak .indicator-text {
+  color: #ff4757;
 }
 
-.pass-indicator#medium::before {
-  background: #e9d88b;
-  width: 50%;
+.pass-indicator.weak .indicator-bar::before {
+  background: linear-gradient(90deg, #ff6348, #ff7675);
+  width: 40%;
 }
 
-.pass-indicator#good::before {
-  background: #5eae60;
-  width: 70%;
+.pass-indicator.weak .indicator-text {
+  color: #ff6348;
 }
 
-.pass-indicator#strong::before {
-  background: #5eae60;
+.pass-indicator.fair .indicator-bar::before {
+  background: linear-gradient(90deg, #ffa502, #ffb142);
+  width: 60%;
+}
+
+.pass-indicator.fair .indicator-text {
+  color: #ffa502;
+}
+
+.pass-indicator.good .indicator-bar::before {
+  background: linear-gradient(90deg, #2ed573, #7bed9f);
+  width: 80%;
+}
+
+.pass-indicator.good .indicator-text {
+  color: #2ed573;
+}
+
+.pass-indicator.strong .indicator-bar::before {
+  background: linear-gradient(90deg, #1dd1a1, #55efc4);
   width: 100%;
+}
+
+.pass-indicator.strong .indicator-text {
+  color: #1dd1a1;
 }
 
 .wrapper .pass-length {
@@ -142,4 +180,29 @@ body {
   border: none;
   border-radius: 10px;
   cursor: pointer;
+}
+
+@media screen and (max-width: 475px) {
+  .container {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .pass-settings .options {
+    flex-direction: column;
+  }
+
+  .pass-settings .options .option {
+    width: 100%;
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .container {
+    min-height: 100dvh;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
 }
