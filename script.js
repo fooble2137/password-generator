@@ -39,11 +39,26 @@ const calculatePasswordStrength = (password) => {
   const hasSpaces = /\s/.test(password);
 
   let charTypes = 0;
-  if (hasLowercase) { score += 5; charTypes++; }
-  if (hasUppercase) { score += 5; charTypes++; }
-  if (hasNumbers) { score += 5; charTypes++; }
-  if (hasSymbols) { score += 10; charTypes++; }
-  if (hasSpaces) { score += 5; charTypes++; }
+  if (hasLowercase) {
+    score += 5;
+    charTypes++;
+  }
+  if (hasUppercase) {
+    score += 5;
+    charTypes++;
+  }
+  if (hasNumbers) {
+    score += 5;
+    charTypes++;
+  }
+  if (hasSymbols) {
+    score += 10;
+    charTypes++;
+  }
+  if (hasSpaces) {
+    score += 5;
+    charTypes++;
+  }
 
   // Bonus for character variety
   if (charTypes >= 4) {
@@ -58,8 +73,13 @@ const calculatePasswordStrength = (password) => {
 
   // Check for patterns and common weaknesses
   const hasRepeatingChars = /(.)\1{2,}/.test(password);
-  const hasSequentialChars = /(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(password);
-  const hasKeyboardPatterns = /(qwerty|asdf|zxcv|1234|password)/i.test(password);
+  const hasSequentialChars =
+    /(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(
+      password
+    );
+  const hasKeyboardPatterns = /(qwerty|asdf|zxcv|1234|password)/i.test(
+    password
+  );
 
   if (hasRepeatingChars) {
     score -= 10;
@@ -88,14 +108,14 @@ const calculatePasswordStrength = (password) => {
 const updatePasswordIndicator = (password = "") => {
   // Remove all existing strength classes
   passwordIndicator.className = "pass-indicator";
-  
+
   if (!password) {
     indicatorText.textContent = "Generate a password";
     return;
   }
 
   const { score, feedback } = calculatePasswordStrength(password);
-  
+
   let strength, message;
 
   if (score >= 80) {
@@ -182,7 +202,7 @@ options.forEach((option) => {
   option.addEventListener("change", generatePassword);
 });
 copyIcon.addEventListener("click", () => {
-  if(navigator.clipboard === undefined) {
+  if (navigator.clipboard === undefined) {
     alert("Clipboard API is not supported in this browser.");
     return;
   }
