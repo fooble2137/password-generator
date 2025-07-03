@@ -75,10 +75,10 @@ const calculatePasswordStrength = (password) => {
   const hasRepeatingChars = /(.)\1{2,}/.test(password);
   const hasSequentialChars =
     /(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(
-      password
+      password.toLowerCase()
     );
   const hasKeyboardPatterns = /(qwerty|asdf|zxcv|1234|password)/i.test(
-    password
+    password.toLowerCase()
   );
 
   if (hasRepeatingChars) {
@@ -170,9 +170,14 @@ const generatePassword = () => {
     let randomChar =
       staticPassword[Math.floor(Math.random() * staticPassword.length)];
     if (excludeDuplicate) {
-      if (!randomPassword.includes(randomChar) || randomChar == " ") {
+      if (!randomPassword.includes(randomChar)) {
         randomPassword += randomChar;
       } else {
+        // Exit if there are no more characters left to be generated
+        if (i > staticPassword.length) {
+          break;
+        }
+        // Otherwise regenerate the current character
         i--;
       }
     } else {
