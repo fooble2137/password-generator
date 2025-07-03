@@ -170,9 +170,14 @@ const generatePassword = () => {
     let randomChar =
       staticPassword[Math.floor(Math.random() * staticPassword.length)];
     if (excludeDuplicate) {
-      if (!randomPassword.includes(randomChar) || randomChar == " ") {
+      if (!randomPassword.includes(randomChar)) {
         randomPassword += randomChar;
       } else {
+        // Exit if there are no more characters left to be generated
+        if (i > staticPassword.length) {
+          break;
+        }
+        // Otherwise regenerate the current character
         i--;
       }
     } else {
