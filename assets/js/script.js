@@ -1,42 +1,52 @@
-const lengthSlider = document.querySelector(".pass-length input");
-const generateBtn = document.querySelector(".generate-btn");
-const options = document.querySelectorAll(".option input");
-const passwordInput = document.querySelector(".input-box input");
-const passwordIndicator = document.querySelector(".pass-indicator");
-const indicatorText = document.querySelector(".indicator-text");
-const copyIcon = document.querySelector(".input-box i");
+const lengthSlider = document.querySelector("#length");
+const generateBtn = document.querySelector("#generate-btn");
+const copyBtn = document.querySelector("#copy-btn");
+const options = document.querySelectorAll("#types input[type='checkbox']");
+const passwordInput = document.querySelector("#password");
+const checkPasswordInput = document.querySelector("#check-password");
+const strengthIndicators = document.querySelectorAll(".strength-indicator");
+const strengthTexts = document.querySelectorAll("#strength");
+const indicatorFills = document.querySelectorAll(".indicator-fill");
+const lengthLabel = document.querySelector("label[for='length']");
 
 const characters = {
   lowercase: "abcdefghijklmnopqrstuvwxyz",
   uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
   numbers: "0123456789",
   symbols: "!@#$%^&*()_+[]{}|;:',.<>?/~`",
+  whitespace: " ",
 };
 
 const calculatePasswordStrength = (password) => {
-  let score = 0;
-  let feedback = [];
-
-  // Length scoring - more detailed
-  if (password.length >= 16) {
-    score += 25;
-  } else if (password.length >= 12) {
-    score += 20;
-  } else if (password.length >= 8) {
-    score += 15;
-  } else if (password.length >= 6) {
-    score += 10;
-  } else {
-    score += 5;
-    feedback.push("Too short");
+  if (!password || password.length === 0) {
+    return { score: 0 };
   }
 
-  // Character variety scoring
+  let score = 0;
+
+  // Length scoring (0-35 points) - much stricter
+  const length = password.length;
+  if (length >= 16) {
+    score += 35;
+  } else if (length >= 14) {
+    score += 30;
+  } else if (length >= 12) {
+    score += 25;
+  } else if (length >= 10) {
+    score += 18;
+  } else if (length >= 8) {
+    score += 12;
+  } else if (length >= 6) {
+    score += 6;
+  } else {
+    score += 2;
+  }
+
+  // Character variety scoring (0-40 points)
   const hasLowercase = /[a-z]/.test(password);
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumbers = /[0-9]/.test(password);
-  const hasSymbols = /[!@#$%^&*()_+\[\]{}|;:',.<>?/~`]/.test(password);
-  const hasSpaces = /\s/.test(password);
+  const hasSymbols = /[!@#$%^&*()_+\[\]{}|;:',.<>?/~`-]/.test(password);
 
   let charTypes = 0;
   if (hasLowercase) {
@@ -44,104 +54,107 @@ const calculatePasswordStrength = (password) => {
     charTypes++;
   }
   if (hasUppercase) {
-    score += 5;
+    score += 10;
     charTypes++;
   }
   if (hasNumbers) {
-    score += 5;
+    score += 10;
     charTypes++;
   }
   if (hasSymbols) {
-    score += 10;
-    charTypes++;
-  }
-  if (hasSpaces) {
-    score += 5;
-    charTypes++;
-  }
-
-  // Bonus for character variety
-  if (charTypes >= 4) {
     score += 15;
-  } else if (charTypes >= 3) {
-    score += 10;
-  } else if (charTypes >= 2) {
-    score += 5;
-  } else {
-    feedback.push("Use more character types");
+    charTypes++;
   }
 
-  // Check for patterns and common weaknesses
+  // Bonus for using multiple character types - but only if length is decent
+  if (charTypes >= 4 && length >= 10) {
+    score += 15;
+  } else if (charTypes >= 3 && length >= 8) {
+    score += 10;
+  } else if (charTypes >= 2 && length >= 6) {
+    score += 5;
+  }
+
+  // Uniqueness bonus (0-10 points)
+  const uniqueChars = new Set(password).size;
+  const uniquenessRatio = uniqueChars / password.length;
+  if (uniquenessRatio >= 0.9 && length >= 8) {
+    score += 10;
+  } else if (uniquenessRatio >= 0.7 && length >= 6) {
+    score += 5;
+  }
+
+  // Penalties for common patterns
   const hasRepeatingChars = /(.)\1{2,}/.test(password);
   const hasSequentialChars =
     /(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(
       password.toLowerCase()
     );
-  const hasKeyboardPatterns = /(qwerty|asdf|zxcv|1234|password)/i.test(
-    password.toLowerCase()
-  );
+  const hasKeyboardPatterns =
+    /(qwerty|asdf|zxcv|1234|password|admin|letmein)/i.test(
+      password.toLowerCase()
+    );
 
   if (hasRepeatingChars) {
-    score -= 10;
-    feedback.push("Avoid repeating characters");
+    score -= 15;
   }
   if (hasSequentialChars) {
-    score -= 5;
-    feedback.push("Avoid sequential characters");
+    score -= 10;
   }
   if (hasKeyboardPatterns) {
-    score -= 15;
-    feedback.push("Avoid common patterns");
+    score -= 25;
   }
 
-  // Calculate entropy bonus
-  const uniqueChars = new Set(password).size;
-  const entropyBonus = Math.floor((uniqueChars / password.length) * 10);
-  score += entropyBonus;
-
-  // Ensure score is within bounds
+  // Ensure score is within bounds (0-100)
   score = Math.max(0, Math.min(100, score));
 
-  return { score, feedback };
+  return { score };
 };
 
-const updatePasswordIndicator = (password = "") => {
-  // Remove all existing strength classes
-  passwordIndicator.className = "pass-indicator";
+const updatePasswordIndicator = (password = "", tabIndex = 0) => {
+  const strengthIndicator = strengthIndicators[tabIndex];
+  const strengthText = strengthTexts[tabIndex];
+  const indicatorFill = indicatorFills[tabIndex];
+
+  strengthIndicator.className = "input-box strength-indicator";
 
   if (!password) {
-    indicatorText.textContent = "Generate a password";
+    if (tabIndex === 1) {
+      strengthText.textContent = "";
+      indicatorFill.style.width = "0%";
+    } else {
+      strengthText.textContent = "Weak";
+      indicatorFill.style.width = "25%";
+      strengthIndicator.classList.add("weak");
+    }
     return;
   }
 
-  const { score, feedback } = calculatePasswordStrength(password);
+  const { score } = calculatePasswordStrength(password);
 
-  let strength, message;
+  let strength, message, widthPercent;
 
-  if (score >= 80) {
+  if (score >= 75) {
     strength = "strong";
-    message = "Very Strong Password";
-  } else if (score >= 60) {
+    message = "Strong";
+    widthPercent = 100;
+  } else if (score >= 50) {
     strength = "good";
-    message = "Good Password";
-  } else if (score >= 40) {
+    message = "Good";
+    widthPercent = 75;
+  } else if (score >= 25) {
     strength = "fair";
-    message = "Fair Password";
-  } else if (score >= 20) {
-    strength = "weak";
-    message = "Weak Password";
+    message = "Fair";
+    widthPercent = 50;
   } else {
-    strength = "very-weak";
-    message = "Very Weak Password";
+    strength = "weak";
+    message = "Weak";
+    widthPercent = 25;
   }
 
-  // Add main feedback if there are suggestions
-  if (feedback.length > 0) {
-    message += ` - ${feedback[0]}`;
-  }
-
-  passwordIndicator.classList.add(strength);
-  indicatorText.textContent = message;
+  strengthIndicator.classList.add(strength);
+  strengthText.textContent = message;
+  indicatorFill.style.width = `${widthPercent}%`;
 };
 
 const generatePassword = () => {
@@ -149,35 +162,46 @@ const generatePassword = () => {
   let passLength = lengthSlider.value;
   let randomPassword = "";
   let excludeDuplicate = false;
+  let includeWhitespace = false;
+
+  let hasAnyTypeSelected = false;
 
   options.forEach((option) => {
-    if (option.id === "lowercase" && !option.checked) {
-      option.checked = true;
-    }
-
     if (option.checked) {
-      if (option.id !== "exc-duplicate" && option.id !== "spaces") {
-        staticPassword += characters[option.id];
-      } else if (option.id === "spaces") {
-        staticPassword += ` ${staticPassword} `;
-      } else {
+      const optionValue = option.value;
+
+      if (optionValue === "exclude-duplicates") {
         excludeDuplicate = true;
+      } else if (optionValue === "whitespace") {
+        includeWhitespace = true;
+      } else if (characters[optionValue]) {
+        staticPassword += characters[optionValue];
+        hasAnyTypeSelected = true;
       }
     }
   });
 
-  for (let i = 0; i < passLength; i++) {
+  if (!hasAnyTypeSelected) {
+    staticPassword = characters.lowercase;
+  }
+
+  if (includeWhitespace) {
+    staticPassword += characters.whitespace;
+  }
+
+  const maxLength = excludeDuplicate ? staticPassword.length : passLength;
+  const actualLength = Math.min(passLength, maxLength);
+
+  for (let i = 0; i < actualLength; i++) {
     let randomChar =
       staticPassword[Math.floor(Math.random() * staticPassword.length)];
     if (excludeDuplicate) {
       if (!randomPassword.includes(randomChar)) {
         randomPassword += randomChar;
       } else {
-        // Exit if there are no more characters left to be generated
-        if (i > staticPassword.length) {
+        if (randomPassword.length >= staticPassword.length) {
           break;
         }
-        // Otherwise regenerate the current character
         i--;
       }
     } else {
@@ -187,35 +211,51 @@ const generatePassword = () => {
 
   passwordInput.value = randomPassword;
 
-  updatePasswordIndicator(randomPassword);
+  updatePasswordIndicator(randomPassword, 0);
 };
 
 const updateSlider = () => {
-  document.querySelector(".pass-length span").innerText = lengthSlider.value;
+  lengthLabel.textContent = `Password Length: ${lengthSlider.value}`;
   generatePassword();
 };
 
-// Initialize the password generator
 updateSlider();
 
 lengthSlider.addEventListener("input", updateSlider);
 generateBtn.addEventListener("click", generatePassword);
-passwordInput.addEventListener("input", (e) => {
-  updatePasswordIndicator(e.target.value);
+
+checkPasswordInput.addEventListener("input", (e) => {
+  updatePasswordIndicator(e.target.value, 1);
 });
+
 options.forEach((option) => {
   option.addEventListener("change", generatePassword);
 });
-copyIcon.addEventListener("click", () => {
+
+copyBtn.addEventListener("click", () => {
   if (navigator.clipboard === undefined) {
-    alert("Clipboard API is not supported in this browser.");
+    alert("Your browser does not support the Clipboard API.");
     return;
   }
 
-  navigator.clipboard.writeText(passwordInput.value);
+  const password = passwordInput.value;
 
-  copyIcon.classList = "ri-check-line";
-  setTimeout(() => {
-    copyIcon.classList = "ri-file-copy-line";
-  }, 1500);
+  if (!password) {
+    return;
+  }
+
+  navigator.clipboard
+    .writeText(password)
+    .then(() => {
+      const icon = copyBtn.querySelector("i");
+      const originalClass = icon.className;
+      icon.className = "ri-check-line";
+
+      setTimeout(() => {
+        icon.className = originalClass;
+      }, 1500);
+    })
+    .catch((err) => {
+      console.error("Failed to copy:", err);
+    });
 });
