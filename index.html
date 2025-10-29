@@ -10,24 +10,26 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <meta name="apple-mobile-web-app-title" content="Fooble Password Generator" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="Fooble Password Generator"
+    />
     <meta name="author" content="Fooble" />
     <meta http-equiv="content-language" content="en" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="revisit-after" content="2 days" />
 
-    <link href="font/font.css" rel="stylesheet" />
-    <link href="style.css" rel="stylesheet" />
+    <link href="assets/css/fonts.css" rel="stylesheet" />
+    <link href="assets/css/reset.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <link href="assets/css/utils.css" rel="stylesheet" />
 
     <link href="favicon.ico" rel="shortcut icon" />
-    <link href="apple-touch-icon.png" rel="apple-touch-icon" />
 
     <link
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css"
       rel="stylesheet"
     />
-
-    <script src="script.js" defer></script>
 
     <meta name="keywords" content="Fooble, Password, Password Generator" />
     <meta
@@ -38,60 +40,123 @@
     <title>Password Generator</title>
   </head>
   <body>
-    <div class="container">
-      <h1>Password Generator</h1>
+    <div id="mobile-nav-overlay"></div>
 
-      <div class="wrapper">
-        <div class="input-box">
-          <input type="text" placeholder="Type a password or generate one" />
-          <i class="ri-file-copy-line"></i>
-        </div>
-
-        <div class="pass-indicator">
-          <div class="indicator-bar"></div>
-          <span class="indicator-text">Generate a password</span>
-        </div>
-
-        <div class="pass-length">
-          <div class="details">
-            <label class="title">Password Length</label>
-            <span></span>
-          </div>
-          <input type="range" min="1" max="30" step="1" value="15" />
-        </div>
-
-        <div class="pass-settings">
-          <label class="title">Password Settings</label>
-          <ul class="options">
-            <li class="option">
-              <input id="lowercase" type="checkbox" checked disabled />
-              <label for="lowercase">Lowercase</label>
-            </li>
-            <li class="option">
-              <input id="uppercase" type="checkbox" />
-              <label for="uppercase">Uppercase</label>
-            </li>
-            <li class="option">
-              <input id="numbers" type="checkbox" />
-              <label for="numbers">Numbers</label>
-            </li>
-            <li class="option">
-              <input id="symbols" type="checkbox" />
-              <label for="symbols">Symbols</label>
-            </li>
-            <li class="option">
-              <input id="spaces" type="checkbox" />
-              <label for="spaces">Spaces</label>
-            </li>
-            <li class="option">
-              <input id="exc-duplicate" type="checkbox" />
-              <label for="exc-duplicate">Exclude Duplicate</label>
-            </li>
-          </ul>
-        </div>
-
-        <button class="generate-btn">Generate Password</button>
+    <nav>
+      <div class="items">
+        <a href="/qr"><i class="ri-qr-code-line"></i> QR Code</a>
+        <a class="soon" href="#"><i class="ri-barcode-line"></i> Barcode</a>
+        <a href="/gradient"><i class="ri-palette-line"></i> CSS Gradient</a>
+        <a class="selected" href="/password"
+          ><i class="ri-key-2-line"></i> Password</a
+        >
+        <a class="soon" href="#"><i class="ri-time-line"></i> Timezone</a>
+        <a class="soon" href="#"><i class="ri-hashtag"></i> Roman</a>
       </div>
-    </div>
+
+      <button class="mobile-nav-toggle"><i class="ri-menu-line"></i></button>
+    </nav>
+
+    <main>
+      <div class="card">
+        <h1>Password Generator</h1>
+
+        <div class="password-generator form">
+          <div class="tabs" id="tabs">
+            <button data-tab="generate">Generate</button>
+            <button data-tab="strength">Check Strength</button>
+          </div>
+
+          <div class="form" data-tab-content="generate">
+            <div class="input-box">
+              <label for="password">Generated Password</label>
+              <input id="password" type="text" readonly />
+            </div>
+
+            <div class="input-box">
+              <label for="length">Password Length: 16</label>
+              <input id="length" type="range" min="4" max="64" value="16" />
+            </div>
+
+            <div class="input-box">
+              <label for="types">Character Types</label>
+
+              <div class="checkbox-group" id="types">
+                <label
+                  ><input type="checkbox" value="lowercase" checked /> Lowercase
+                  (a-z)</label
+                >
+                <label
+                  ><input type="checkbox" value="uppercase" checked /> Uppercase
+                  (A-Z)</label
+                >
+                <label
+                  ><input type="checkbox" value="numbers" checked /> Numbers
+                  (0-9)</label
+                >
+                <label
+                  ><input type="checkbox" value="symbols" checked /> Symbols
+                  (!@#$%^&*...)</label
+                >
+                <label
+                  ><input type="checkbox" value="whitespace" /> Whitespace (
+                  )</label
+                >
+                <label
+                  ><input type="checkbox" value="exclude-duplicates" /> Exclude
+                  Duplicate Characters</label
+                >
+              </div>
+            </div>
+
+            <div class="btns">
+              <button class="btn" id="generate-btn">
+                <i class="ri-loop-left-line"></i> Generate
+              </button>
+              <button class="btn" id="copy-btn">
+                <i class="ri-file-copy-line"></i> Copy
+              </button>
+            </div>
+
+            <div class="input-box strength-indicator weak">
+              <div class="top">
+                <label for="strength">Password Strength</label>
+                <span id="strength">Weak</span>
+              </div>
+
+              <div class="indicator-bar">
+                <div style="width: 25%;" class="indicator-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form" data-tab-content="strength">
+            <div class="input-box">
+              <label for="check-password">Enter Password to Check</label>
+              <input
+                id="check-password"
+                type="text"
+                placeholder="Type your password here..."
+              />
+            </div>
+
+            <div class="input-box strength-indicator weak">
+              <div class="top">
+                <label for="strength">Password Strength</label>
+                <span id="strength">Weak</span>
+              </div>
+
+              <div class="indicator-bar">
+                <div style="width: 25%;" class="indicator-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/tabs.js"></script>
+    <script src="assets/js/nav.js"></script>
   </body>
 </html>

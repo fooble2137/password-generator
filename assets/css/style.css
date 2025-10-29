@@ -1,0 +1,66 @@
+:root {
+  --primary-color: #109bff;
+}
+
+.strength-indicator.weak {
+  --color: #ef4444;
+}
+
+.strength-indicator.fair {
+  --color: #f59e0b;
+}
+
+.strength-indicator.good {
+  --color: #10b981;
+}
+
+.strength-indicator.strong {
+  --color: #059669;
+}
+
+.strength-indicator .top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.strength-indicator .top span {
+  font-size: 0.9rem;
+  color: var(--color);
+}
+
+.strength-indicator .indicator-bar {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e0e0e0;
+  overflow: hidden;
+}
+
+.strength-indicator .indicator-fill {
+  height: 100%;
+  transition: width 0.3s;
+  background-color: var(--color);
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  main {
+    padding: 0 !important;
+  }
+
+  nav {
+    border-bottom: 1px solid #e0e0e0;
+    height: 59px;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: 100%;
+    min-height: calc(100dvh - 60px);
+  }
+}
